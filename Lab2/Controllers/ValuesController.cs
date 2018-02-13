@@ -13,6 +13,9 @@ namespace Lab2.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            string[] test = { "-n", "test" };
+            DatabaseManager dbManager = new DatabaseManager(test);
+
             return new string[] { "value1", "value2" };
         }
 

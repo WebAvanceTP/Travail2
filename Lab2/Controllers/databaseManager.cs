@@ -14,13 +14,13 @@ namespace Lab2.Controllers
 
         public DatabaseManager(string[] args)
         {
-
+            processArgs(args);
         }
 
         private void processArgs(string[] args)
         {
             int nbrCom = 0;
-            int nbrPar = -1;
+            int nbrPar = 0;
 
             foreach (string arg in args)
             {
@@ -37,7 +37,7 @@ namespace Lab2.Controllers
                 {
                     if (args[i].IndexOf('-') != 0)
                         continue;
-                    processArgs(args[i][1], args[i + nbrCom + 1]);
+                    processArgs(args[i][1], args[i + nbrCom]);
                 }
             }
         }
@@ -55,13 +55,11 @@ namespace Lab2.Controllers
 
         private void createNewFile(string _name)
         {
-            if (File.Exists("../db/" + _name))
+            if (File.Exists(@"..\db\" + _name))
                 throw new Exception("La base de donnee existe deja");
 
-            string dbString = "Data Source=../db/";
-            dbString += _name;
-            dbString += ";Version=";
-            dbString += VERSION;
+            string dbString = @"Data Source=db\";
+            dbString += _name + ".sqlite";
             m_dbConnection = new SqliteConnection(dbString);
             m_dbConnection.Open();
 
@@ -74,9 +72,18 @@ namespace Lab2.Controllers
                 "(id int, " +
                 "nom varchar(20), " +
                 "prenom varchar(20), " +
-                "username varchar(20)" +
-                "password varchar(129)";
+                "username varchar(20)," +
+                "password varchar(129))";
             sqlCommand = new SqliteCommand(sqlString, m_dbConnection);
+
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
